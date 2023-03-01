@@ -9,6 +9,7 @@ function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
+  const [selectedCard, setSelectedCard] = useState(null);
 
   const handleEditProfileClick = () => {
     setIsEditProfilePopupOpen(true);
@@ -19,11 +20,15 @@ function App() {
   const handleEditAvatarClick = () => {
     setIsEditAvatarPopupOpen(true);
   };
+  const handleCardClick = (data) => {
+    setSelectedCard(data);
+  }
 
   const closeAllPopups = () => {
     setIsEditProfilePopupOpen( false);
     setIsAddPlacePopupOpen(false);
     setIsEditAvatarPopupOpen(false);
+    setSelectedCard(null)
   };
 
   return (
@@ -33,6 +38,7 @@ function App() {
         onEditProfile={handleEditProfileClick}
         onAddPlace={handleAddPlaceClick}
         onEditAvatar={handleEditAvatarClick}
+        onCardClick={handleCardClick}
       />
       <Footer />
       <PopupWithForm
@@ -74,7 +80,7 @@ function App() {
           id="avatar-link-input" required />
         <span className="popup__input-error avatar-link-input-error" id="avatar_error"></span>
       </PopupWithForm>
-      <ImagePopup />
+      <ImagePopup card={selectedCard} onClose={closeAllPopups} />
       <PopupWithForm
         title="Вы уверены?"
         name="delete-card"
