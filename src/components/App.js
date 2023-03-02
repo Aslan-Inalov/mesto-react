@@ -49,10 +49,10 @@ function App() {
         onClose={closeAllPopups}
       >
         <input type="text" name="name" placeholder="Имя" className="popup__input popup__input_user_name"
-          id="profile-name-input" minlength="2" maxlength="40" required />
+          id="profile-name-input" minLength="2" maxLength="40" required />
         <span className="popup__input-error profile-name-input-error"></span>
         <input type="text" name="about" placeholder="О себе" className="popup__input popup__input_user_about"
-          id="profile-about-input" minlength="2" maxlength="200" required />
+          id="profile-about-input" minLength="2" maxLength="200" required />
         <span className="popup__input-error profile-about-input-error"></span>
       </PopupWithForm>
       <PopupWithForm
@@ -63,7 +63,7 @@ function App() {
         onClose={closeAllPopups}
       >
         <input type="text" name="nameCard" placeholder="Название" className="popup__input popup__input_card_name"
-          id="card-name-input" minlength="2" maxlength="30" required />
+          id="card-name-input" minLength="2" maxLength="30" required />
         <span className="popup__input-error card-name-input-error"></span>
         <input type="url" name="linkCard" placeholder="Ссылка на картинку" className="popup__input popup__input_card_link"
           id="card-link-input" required />
