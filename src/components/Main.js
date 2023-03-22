@@ -1,5 +1,6 @@
+import { useContext, useEffect, useState } from 'react';
+import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import { api } from '../utils/api';
-import { useState, useEffect } from 'react';
 import Card from './Card';
 
 function Main({
@@ -8,17 +9,10 @@ function Main({
     onEditAvatar,
     onCardClick,
 }) {
-    const [userName, setUserName] = useState('');
-    const [userDescription, setUserDescription] = useState('');
-    const [userAvatar, setUserAvatar] = useState('');
+    const currentUser = useContext(CurrentUserContext);
     const [cards, setCards] = useState([]);
 
     useEffect(() => {
-        api.getUserInfo().then(data => {
-            setUserName(data.name);
-            setUserDescription(data.about);
-            setUserAvatar(data.avatar);
-        });
         api.getInitialCards().then(dataCard => {
             setCards(dataCard);
         })
@@ -29,12 +23,12 @@ function Main({
         <main className="content">
             <section className="profile">
                 <button className="profile__avatar-button" onClick={onEditAvatar}>
-                    <img src={userAvatar} alt="аватарка" className="profile__avatar" />
+                    <img src={currentUser.avatar} alt="аватарка" className="profile__avatar" />
                 </button>
                 <div className="profile__info">
-                    <h1 className="profile__name">{userName}</h1>
+                    <h1 className="profile__name">{currentUser.name}</h1>
                     <button className="profile__edit-button opacity" onClick={onEditProfile} aria-label="Редактировать профиль" type="button"></button>
-                    <p className="profile__about">{userDescription}</p>
+                    <p className="profile__about">{currentUser.about}</p>
                 </div>
                 <button className="profile__add-button opacity" onClick={onAddPlace} aria-label="Добавить" type="button"></button>
             </section>
