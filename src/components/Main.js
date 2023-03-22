@@ -1,6 +1,5 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext } from 'react';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
-import { api } from '../utils/api';
 import Card from './Card';
 
 function Main({
@@ -8,15 +7,11 @@ function Main({
     onAddPlace,
     onEditAvatar,
     onCardClick,
+    onCardLike,
+    onCardDelete,
+    cards
 }) {
     const currentUser = useContext(CurrentUserContext);
-    const [cards, setCards] = useState([]);
-
-    useEffect(() => {
-        api.getInitialCards().then(dataCard => {
-            setCards(dataCard);
-        })
-    }, []);
 
 
     return (
@@ -35,7 +30,12 @@ function Main({
             <section className="elements">
                 <ul className="element">
                     {cards.map(card => (
-                        <Card key={card._id} card={card} onCardClick={onCardClick} />
+                        <Card
+                            key={card._id}
+                            card={card}
+                            onCardClick={onCardClick}
+                            onCardLike={onCardLike}
+                            onCardDelete={onCardDelete} />
                     ))}
                 </ul>
             </section>
