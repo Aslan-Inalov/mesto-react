@@ -6,6 +6,7 @@ import ImagePopup from "./ImagePopup";
 import { useEffect, useState } from 'react';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import { api } from "../utils/api";
+import EditProfilePopup from "./EditProfilePopup"
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
@@ -58,6 +59,13 @@ function App() {
     setSelectedCard(null)
   };
 
+  const handleUpdateUser = (user) => {
+    api.updateUser(user).then(() => {
+      setCurrentUser(user);
+      closeAllPopups();
+    });
+  };
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
@@ -72,20 +80,7 @@ function App() {
           cards={cards}
         />
         <Footer />
-        <PopupWithForm
-          title="Редактировать профиль"
-          name="profile"
-          buttonText="Сохранить"
-          isOpen={isEditProfilePopupOpen}
-          onClose={closeAllPopups}
-        >
-          <input type="text" name="name" placeholder="Имя" className="popup__input popup__input_user_name"
-            id="profile-name-input" minLength="2" maxLength="40" required />
-          <span className="popup__input-error profile-name-input-error"></span>
-          <input type="text" name="about" placeholder="О себе" className="popup__input popup__input_user_about"
-            id="profile-about-input" minLength="2" maxLength="200" required />
-          <span className="popup__input-error profile-about-input-error"></span>
-        </PopupWithForm>
+        <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
         <PopupWithForm
           title="Новое место"
           name="card"
