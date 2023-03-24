@@ -6,7 +6,8 @@ import ImagePopup from "./ImagePopup";
 import { useEffect, useState } from 'react';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import { api } from "../utils/api";
-import EditProfilePopup from "./EditProfilePopup"
+import EditProfilePopup from "./EditProfilePopup";
+import EditAvatarPopup from "./EditAvatarPopup";
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
@@ -15,7 +16,7 @@ function App() {
   const [selectedCard, setSelectedCard] = useState(null);
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
-
+  
   useEffect(() => {
     api.getUserInfo().then((user) => {
       setCurrentUser(user);
@@ -38,6 +39,15 @@ function App() {
       setCards((state) => state.filter((item) => item._id !== card._id));
     });
   }
+
+  const handleUpdateAvatar = (avatar) => {
+    api
+      .updateAvatar(avatar)
+      .then((user) => {
+        setCurrentUser(user);
+        closeAllPopups();
+      })
+  };
 
   const handleEditProfileClick = () => {
     setIsEditProfilePopupOpen(true);
@@ -63,7 +73,7 @@ function App() {
     api.updateUser(user).then(() => {
       setCurrentUser(user);
       closeAllPopups();
-    });
+    })
   };
 
   return (
@@ -95,17 +105,7 @@ function App() {
             id="card-link-input" required />
           <span className="popup__input-error card-link-input-error"></span>
         </PopupWithForm>
-        <PopupWithForm
-          title="Обновить аватар"
-          name="avatar"
-          buttonText="Сохранить"
-          isOpen={isEditAvatarPopupOpen}
-          onClose={closeAllPopups}
-        >
-          <input type="url" name="avatarLink" placeholder="Ссылка на картинку" className="popup__input popup__input_avatar"
-            id="avatar-link-input" required />
-          <span className="popup__input-error avatar-link-input-error" id="avatar_error"></span>
-        </PopupWithForm>
+        <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} />
         <ImagePopup card={selectedCard} onClose={closeAllPopups} />
         <PopupWithForm
           title="Вы уверены?"
