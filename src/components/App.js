@@ -8,6 +8,7 @@ import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import { api } from "../utils/api";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
+import AddPlacePopup from "./AddPlacePopup";
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
@@ -16,7 +17,7 @@ function App() {
   const [selectedCard, setSelectedCard] = useState(null);
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
-  
+
   useEffect(() => {
     api.getUserInfo().then((user) => {
       setCurrentUser(user);
@@ -40,6 +41,18 @@ function App() {
     });
   }
 
+  const handleUpdateUser = (user) => {
+    api.updateUser(user)
+      .then((updatedUser) => {
+        setCurrentUser(updatedUser);
+        closeAllPopups();
+      })
+      .catch((err) => {
+        console.log(`Ошибка: ${err}`);
+      });
+  };
+  
+
   const handleUpdateAvatar = (avatar) => {
     api
       .updateAvatar(avatar)
@@ -48,6 +61,43 @@ function App() {
         closeAllPopups();
       })
   };
+
+  function handleAddPlaceSubmit(data) {
+    api
+      .addNewCard(data)
+      .then((newCard) => {
+        setCards([newCard, ...cards]);
+        closeAllPopups();
+      })
+      .catch((err) => {
+        console.log(`Ошибка: ${err}`);
+      });
+  }
+
+  const handleCloseByEsc = (e) => {
+    if (e.key === 'Escape') {
+      closeAllPopups();
+    }
+  };
+
+  const handleClickOnOverlay = (e) => {
+    if (e.target.classList.contains('popup_opened')) {
+      closeAllPopups();
+    }
+  };
+
+  useEffect(() => {
+    if (isEditProfilePopupOpen || isAddPlacePopupOpen || isEditAvatarPopupOpen || selectedCard) {
+      document.addEventListener('keydown', handleCloseByEsc);
+      document.addEventListener('mousedown', handleClickOnOverlay);
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleCloseByEsc);
+      document.removeEventListener('mousedown', handleClickOnOverlay);
+    };
+  }, [ isEditProfilePopupOpen, isAddPlacePopupOpen, isEditAvatarPopupOpen, selectedCard]);
+
 
   const handleEditProfileClick = () => {
     setIsEditProfilePopupOpen(true);
@@ -69,13 +119,6 @@ function App() {
     setSelectedCard(null)
   };
 
-  const handleUpdateUser = (user) => {
-    api.updateUser(user).then(() => {
-      setCurrentUser(user);
-      closeAllPopups();
-    })
-  };
-
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
@@ -91,20 +134,7 @@ function App() {
         />
         <Footer />
         <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
-        <PopupWithForm
-          title="Новое место"
-          name="card"
-          buttonText="Создать"
-          isOpen={isAddPlacePopupOpen}
-          onClose={closeAllPopups}
-        >
-          <input type="text" name="nameCard" placeholder="Название" className="popup__input popup__input_card_name"
-            id="card-name-input" minLength="2" maxLength="30" required />
-          <span className="popup__input-error card-name-input-error"></span>
-          <input type="url" name="linkCard" placeholder="Ссылка на картинку" className="popup__input popup__input_card_link"
-            id="card-link-input" required />
-          <span className="popup__input-error card-link-input-error"></span>
-        </PopupWithForm>
+        <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleAddPlaceSubmit} />
         <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} />
         <ImagePopup card={selectedCard} onClose={closeAllPopups} />
         <PopupWithForm
