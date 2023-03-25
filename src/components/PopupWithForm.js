@@ -14,7 +14,7 @@ function PopupWithForm({ title, name, buttonText, children, isOpen, onClose, onS
           type="button"
           aria-label="Закрыть попап"
           onClick={onClose}
-        ></button>
+        />
       </div>
     </div>
   );
