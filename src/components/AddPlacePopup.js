@@ -1,30 +1,34 @@
 import PopupWithForm from "./PopupWithForm";
 import { useForm } from "../hooks/useForm";
+import { useEffect } from "react";
+
 
 function AddPlacePopup({ isOpen, onClose, onAddPlace, isLoading }) {
-    const {values, handleChange, setValues} = useForm({
+    const { values, handleChange, setValues } = useForm({
         cardName: '',
         cardLink: ''
-      });
+    });
+
+    useEffect(() => {
+        setValues({
+            cardName: "",
+            cardLink: "",
+        });
+    }, [isOpen, setValues]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-    
         onAddPlace({
-          name: values.cardName,
-          link: values.cardLink,
+            name: values.cardName,
+            link: values.cardLink,
         });
-        setValues({
-            cardName: '',
-            cardLink: ''
-          });      
-      };
+    };
 
     return (
         <PopupWithForm
             title="Новое место"
             name="card"
-            buttonText={isLoading? 'Создание...' : 'Создать'}
+            buttonText={isLoading ? 'Создание...' : 'Создать'}
             isOpen={isOpen}
             onClose={onClose}
             onSubmit={handleSubmit}

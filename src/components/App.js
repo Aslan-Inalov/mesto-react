@@ -101,8 +101,9 @@ function App() {
       });
   }
 
+  const isOpen = isEditProfilePopupOpen || isAddPlacePopupOpen || isEditAvatarPopupOpen || selectedCard;
+
   useEffect(() => {
-    const isOpen = isEditProfilePopupOpen || isAddPlacePopupOpen || isEditAvatarPopupOpen || selectedCard;
     function handleCloseByEsc(e) {
       if (e.key === 'Escape') {
         closeAllPopups();
@@ -116,15 +117,12 @@ function App() {
     if (isOpen) {
       document.addEventListener('keydown', handleCloseByEsc);
       document.addEventListener('mousedown', handleClickOnOverlay);
-    } else {
-      document.removeEventListener('keydown', handleCloseByEsc);
-      document.removeEventListener('mousedown', handleClickOnOverlay);
     }
     return () => {
       document.removeEventListener('keydown', handleCloseByEsc);
       document.removeEventListener('mousedown', handleClickOnOverlay);
     };
-  }, [isEditProfilePopupOpen, isAddPlacePopupOpen, isEditAvatarPopupOpen, selectedCard]);
+  }, [isOpen]);
 
 
   const handleEditProfileClick = () => {
